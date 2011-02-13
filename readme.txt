@@ -1,4 +1,4 @@
-=== User Role Editor ===
+=== FE Fiction ===
 Contributors: phxvyper
 Tags: fiction, posts, post types, custom fields
 Requires at least: 3.0
