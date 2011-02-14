@@ -388,32 +388,22 @@ function create_post_type_files( $post_type ) {
 	}
 }
 
+function FeFiction_Admin_Menu()
+{
+	add_options_page(__('FE Fiction'), __('FE Fiction'), 'Administrator', basename(__FILE__), 'FeFiction_Admin_Options_Page');
+}
+
+function FeFiction_Admin_Options_Page()
+{
+	include_once('views/fe-fiction-admin-options-form.php');
+}
+
 function FeFiction_Site_Submit_Display()
 {
 	global $taxonomies;
 	$my_taxonomies = array_keys($taxonomies);
-	?>
-	<li id="categories">
-		<h2><?php _e('Posts by Category'); ?></h2>
-		<form action="<?php bloginfo('url'); ?>/" method="get">
-		<div>
-	<?php
-	$categories_select = wp_dropdown_categories('taxonomy=story_category&hierarchical=1&orderby=name&hide_empty=0&echo=0');
-	if(stristr($categories_select,'level-0'))
-	{
-		$categories_select = str_replace('"level-0"','"level-0" disabled',$categories_select);
-		$categories_select = str_replace('<select','<select multiple',$categories_select);
-	}
-	echo $categories_select;
 
-	wp_dropdown_categories('show_option_none=Select Rating&taxonomy=rating&orderby=name&hide_empty=0');
-
-	wp_dropdown_categories('show_option_none=Select Genre&taxonomy=genre&orderby=name&hide_empty=0');
-	?>
-		</div>
-		</form>
-	</li>
-<?php
+	include_once('views/fe-fiction-site-submit-form.php');
 }
 
 // disable default dashboard widgets
@@ -429,36 +419,3 @@ function disable_default_dashboard_widgets() {
 	remove_meta_box('dashboard_primary', 'dashboard', 'core');
 	remove_meta_box('dashboard_secondary', 'dashboard', 'core');
 }
-
-
-//			foreach($this->taxonomies_story_category_terms['terms'] as $categories_parent => $categories)
-//			{
-//				// array is returned if taxonomy is given
-//				$parent_term = term_exists( $categories_parent, $this->taxonomies_story_category_terms['taxonomy'] );
-//
-//				if(is_array($parent_term))
-//				{
-//					// get numeric term id
-//					$parent_term_id = $parent_term['term_id'];
-//				}
-//				else
-//				{
-//					// create and get numeric term id
-//					$parent_term = wp_insert_term(
-//						$categories_parent
-//						,$this->taxonomies_story_category_terms['taxonomy']
-//					);
-//
-//					$parent_term_id = $parent_term['term_id'];
-//				}
-//
-//				for($a=0;$a<count($categories);$a++)
-//				{
-//					wp_insert_term(
-//						$categories[$a]
-//						,$this->taxonomies_story_category_terms['taxonomy']
-//						,array('parent' => $parent_term_id)
-//					);
-//				}
-//			}
-?>
