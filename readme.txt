@@ -25,13 +25,8 @@ Under Construction
 
 Coming ...
 
-== Special Thanks to ==
-N/A
-
 == Changelog ==
 = 0.1a =
 * 13.02.2011
 * 1st release. ALPHA.  Not recommended for current download.
 
-== Additional Documentation ==
-None.
