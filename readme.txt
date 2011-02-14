@@ -7,6 +7,8 @@ Stable tag: 3.0
 
 == Description ==
 
+= Download not yet available =
+
 FE Fiction provides ability to manage stories with genres, categories, ratings, etc. This is a fairly straight forward plugin, still in its infancy. Soon to be completed will be front-end posting, search, browsing, and more.
 
 == Installation ==
