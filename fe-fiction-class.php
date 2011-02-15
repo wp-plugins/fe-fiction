@@ -271,10 +271,12 @@ function FeFiction_Activate()
 	if ( !is_multisite() )
 		exit( 'The FE Fiction plugin is only compatible with WordPress Multisite.' );
 
+	/**
 	$user_roles = 'a:5:{s:13:"administrator";a:2:{s:4:"name";s:13:"Administrator";s:12:"capabilities";a:66:{s:13:"switch_themes";b:1;s:11:"edit_themes";b:1;s:16:"activate_plugins";b:1;s:12:"edit_plugins";b:1;s:10:"edit_users";b:1;s:10:"edit_files";b:1;s:14:"manage_options";b:1;s:17:"moderate_comments";b:1;s:17:"manage_categories";b:1;s:12:"manage_links";b:1;s:12:"upload_files";b:1;s:6:"import";b:1;s:15:"unfiltered_html";b:1;s:10:"edit_posts";b:1;s:17:"edit_others_posts";b:1;s:20:"edit_published_posts";b:1;s:13:"publish_posts";b:1;s:10:"edit_pages";b:1;s:4:"read";b:1;s:8:"level_10";b:1;s:7:"level_9";b:1;s:7:"level_8";b:1;s:7:"level_7";b:1;s:7:"level_6";b:1;s:7:"level_5";b:1;s:7:"level_4";b:1;s:7:"level_3";b:1;s:7:"level_2";b:1;s:7:"level_1";b:1;s:7:"level_0";b:1;s:17:"edit_others_pages";b:1;s:20:"edit_published_pages";b:1;s:13:"publish_pages";b:1;s:12:"delete_pages";b:1;s:19:"delete_others_pages";b:1;s:22:"delete_published_pages";b:1;s:12:"delete_posts";b:1;s:19:"delete_others_posts";b:1;s:22:"delete_published_posts";b:1;s:20:"delete_private_posts";b:1;s:18:"edit_private_posts";b:1;s:18:"read_private_posts";b:1;s:20:"delete_private_pages";b:1;s:18:"edit_private_pages";b:1;s:18:"read_private_pages";b:1;s:12:"delete_users";b:1;s:12:"create_users";b:1;s:17:"unfiltered_upload";b:1;s:14:"edit_dashboard";b:1;s:14:"update_plugins";b:1;s:14:"delete_plugins";b:1;s:15:"install_plugins";b:1;s:13:"update_themes";b:1;s:14:"install_themes";b:1;s:11:"update_core";b:1;s:10:"list_users";b:1;s:12:"remove_users";b:1;s:9:"add_users";b:1;s:13:"promote_users";b:1;s:18:"edit_theme_options";b:1;s:13:"delete_themes";b:1;s:6:"export";b:1;s:14:"frm_view_forms";b:1;s:14:"frm_edit_forms";b:1;s:16:"frm_delete_forms";b:1;s:19:"frm_change_settings";b:1;}}s:6:"editor";a:2:{s:4:"name";s:6:"Editor";s:12:"capabilities";a:34:{s:17:"moderate_comments";b:1;s:17:"manage_categories";b:1;s:12:"manage_links";b:1;s:12:"upload_files";b:1;s:15:"unfiltered_html";b:1;s:10:"edit_posts";b:1;s:17:"edit_others_posts";b:1;s:20:"edit_published_posts";b:1;s:13:"publish_posts";b:1;s:10:"edit_pages";b:1;s:4:"read";b:1;s:7:"level_7";b:1;s:7:"level_6";b:1;s:7:"level_5";b:1;s:7:"level_4";b:1;s:7:"level_3";b:1;s:7:"level_2";b:1;s:7:"level_1";b:1;s:7:"level_0";b:1;s:17:"edit_others_pages";b:1;s:20:"edit_published_pages";b:1;s:13:"publish_pages";b:1;s:12:"delete_pages";b:1;s:19:"delete_others_pages";b:1;s:22:"delete_published_pages";b:1;s:12:"delete_posts";b:1;s:19:"delete_others_posts";b:1;s:22:"delete_published_posts";b:1;s:20:"delete_private_posts";b:1;s:18:"edit_private_posts";b:1;s:18:"read_private_posts";b:1;s:20:"delete_private_pages";b:1;s:18:"edit_private_pages";b:1;s:18:"read_private_pages";b:1;}}s:6:"author";a:2:{s:4:"name";s:6:"Author";s:12:"capabilities";a:9:{s:12:"delete_posts";i:1;s:22:"delete_published_posts";i:1;s:10:"edit_posts";i:1;s:20:"edit_published_posts";i:1;s:7:"level_0";i:1;s:7:"level_1";i:1;s:7:"level_2";i:1;s:13:"publish_posts";i:1;s:4:"read";i:1;}}s:11:"contributor";a:2:{s:4:"name";s:11:"Contributor";s:12:"capabilities";a:5:{s:10:"edit_posts";b:1;s:4:"read";b:1;s:7:"level_1";b:1;s:7:"level_0";b:1;s:12:"delete_posts";b:1;}}s:10:"subscriber";a:2:{s:4:"name";s:10:"Subscriber";s:12:"capabilities";a:3:{s:20:"edit_published_posts";i:1;s:7:"level_0";i:1;s:4:"read";i:1;}}}';
 
 	update_option( $wpdb->prefix.'user_roles_backup' , get_option($wpdb->prefix.'user_roles') );
 	update_option( $wpdb->prefix.'user_roles' , unserialize($user_roles) );
+	**/
 }
 
 //This function is called on Plugin De-Activation
@@ -313,20 +315,26 @@ function FeFiction_Init_Taxonomies()
 
 function FeFiction_Init_Options()
 {
-	global $fe_fiction_options;
+	global $fe_fiction_wp_options;
 
 	/** START OVERRIDE THE DASHBOARD WITH A NICE CLEAN OPTIONS PAGE **/
 	if(get_option($fe_fiction_wp_options['custom_dashboard']) == '1')
 	{
-		new_cms_dashboard_widget_function();
 		add_action('admin_menu', 'disable_default_dashboard_widgets');
 		add_action('admin_head', 'admin_register_head_new_cms_dashboard_37');
-		add_action('wp_dashboard_setup', 'new_cms_dashboard_widgets' );
+		if(stristr('/wp-admin/index.php',$_SERVER['REQUEST_URI']))
+		{
+			add_action('wp_dashboard_setup', 'new_cms_dashboard_widgets' );
+		}
+		else
+		{
+			add_action('admin_notices', 'new_cms_dashboard_widgets2' );
+		}
 	}
 	/** END OVERRIDE THE DASHBOARD WITH A NICE CLEAN OPTIONS PAGE **/
 
 	/** START REMOVE ADMIN MENUS **/
-	if(get_option($fe_fiction_wp_options['hide_admin_menus']) == '1')
+	if(get_option($fe_fiction_wp_options['hide_admin_menus']) == '1' && !is_super_admin() && !(current_user_can('manage_options')))
 	{
 		add_action('admin_head', 'fe_fiction_remove_admin_menus');
 	}
@@ -344,6 +352,10 @@ function new_cms_dashboard_widget_function() {
 
 function new_cms_dashboard_widgets() {
 	wp_add_dashboard_widget('new_cms_dashboard_widget', 'Your Options', 'new_cms_dashboard_widget_function');	
+} 
+
+function new_cms_dashboard_widgets2() {
+	echo '<div style="padding-top:50px;"></div>';new_cms_dashboard_widget_function();
 } 
 
 function admin_register_head_new_cms_dashboard_37() {
@@ -456,6 +468,32 @@ function FeFiction_Admin_Menu()
 
 function FeFiction_Admin_Options_Page()
 {
+	global $fe_fiction_wp_options;
+    $siteurl = get_option('siteurl');
+    $plugin_view_path = '/wp-content/plugins/' . basename(dirname(__FILE__)) . '/views';
+	$options_updated = false;
+
+	if(isset($_POST) && is_array($_POST) && isset($_POST['Submit']))
+	{
+		//$fe_fiction_wp_options = array('custom_dashboard'=>'fe-fiction-custom_dashboard','hide_admin_menus'=>'fe-fiction-hide_admin_menus');
+		if(isset($_POST['custom_dashboard']))
+		{
+			update_option($fe_fiction_wp_options['custom_dashboard'],'1');
+		}
+		else
+		{
+			update_option($fe_fiction_wp_options['custom_dashboard'],'0');
+		}
+		if(isset($_POST['hide_admin_menus']))
+		{
+			update_option($fe_fiction_wp_options['hide_admin_menus'],'1');
+		}
+		else
+		{
+			update_option($fe_fiction_wp_options['hide_admin_menus'],'0');
+		}
+		$options_updated = true;
+	}
 	include_once('views/fe-fiction-admin-options-form.php');
 }
 
