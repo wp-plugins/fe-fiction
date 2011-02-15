@@ -1,0 +1,31 @@
+/*
+
+Dashboard Pages Styling 
+
+*/
+
+#dashboard-cms li { margin: 0 10px 10px 0; padding: 0 10px  0 10px; float: left; line-height: 62px; font-weight: bold; }
+
+#dashboard-cms li a { font-size: 13px; }
+#dashboard-cms div { display: block; float: none !important; margin: 10px auto 0 auto;}
+
+.left-gray { background: #eee; -moz-border-radius-topleft: 6px; -webkit-border-top-left-radius: 6px;
+	-moz-border-radius-bottomleft: 6px;  -webkit-border-bottom-left-radius: 6px; margin-right: 0px !important;
+	  }
+	
+.left-gray #icon-edit-pages, .left-gray #icon-edit, .left-gray #icon-users
+,.gray #icon-edit-pages, .gray #icon-edit, .gray #icon-users
+{ background-image: url('icons32-add.png') !important; }
+	
+.right-gray { background: #eee;
+	-moz-border-radius-topright: 6px; -webkit-border-top-right-radius: 6px;
+	-moz-border-radius-bottomright: 6px;  -webkit-border-bottom-right-radius: 6px;
+	 }
+	
+.gray {
+	background: #eee;
+	-moz-border-radius-topleft: 6px; -webkit-border-top-left-radius: 6px;
+	-moz-border-radius-bottomleft: 6px;  -webkit-border-bottom-left-radius: 6px; margin-right: 0px !important;
+	-moz-border-radius-topright: 6px; -webkit-border-top-right-radius: 6px;
+	-moz-border-radius-bottomright: 6px;  -webkit-border-bottom-right-radius: 6px;
+}
