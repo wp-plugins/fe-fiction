@@ -1,8 +1,8 @@
 <?php
 
 $option_name = 'fe_fiction_loaded';
-
 $custom_post_type = 'fiction';
+$fe_fiction_wp_options = array('custom_dashboard'=>'fe-fiction-custom_dashboard','hide_admin_menus'=>'fe-fiction-hide_admin_menus');
 
 $custom_post_type_args = array(
 		'labels' => Array
@@ -309,6 +309,67 @@ function FeFiction_Init_Taxonomies()
 	}
 
 	flush_rewrite_rules( false );
+}
+
+function FeFiction_Init_Options()
+{
+	global $fe_fiction_options;
+
+	/** START OVERRIDE THE DASHBOARD WITH A NICE CLEAN OPTIONS PAGE **/
+	if(get_option($fe_fiction_wp_options['custom_dashboard']) == '1')
+	{
+		new_cms_dashboard_widget_function();
+		add_action('admin_menu', 'disable_default_dashboard_widgets');
+		add_action('admin_head', 'admin_register_head_new_cms_dashboard_37');
+		add_action('wp_dashboard_setup', 'new_cms_dashboard_widgets' );
+	}
+	/** END OVERRIDE THE DASHBOARD WITH A NICE CLEAN OPTIONS PAGE **/
+
+	/** START REMOVE ADMIN MENUS **/
+	if(get_option($fe_fiction_wp_options['hide_admin_menus']) == '1')
+	{
+		add_action('admin_head', 'fe_fiction_remove_admin_menus');
+	}
+	/** END REMOVE ADMIN MENUS **/
+}
+
+function new_cms_dashboard_widget_function() {
+	/** from fe-fiction-class **/
+	global $custom_post_type;
+    $siteurl = get_option('siteurl');
+
+	/** WordPress Administration Bootstrap */
+	include_once('views/new_dashboard_page.php');
+} 
+
+function new_cms_dashboard_widgets() {
+	wp_add_dashboard_widget('new_cms_dashboard_widget', 'Your Options', 'new_cms_dashboard_widget_function');	
+} 
+
+function admin_register_head_new_cms_dashboard_37() {
+    $siteurl = get_option('siteurl');
+    $url = $siteurl . '/wp-content/plugins/' . basename(dirname(__FILE__)) . '/new_dashboard.css';
+    echo "<link rel='stylesheet' type='text/css' href='$url' />\n";
+}
+
+/** START HIDE ADMIN MENU FOR NON-ADMIN USERS **/
+function fe_fiction_remove_admin_menus()
+{
+	global $submenu,$menu;
+	foreach($submenu as $url => $array)
+	{
+		unset($submenu[$url]);
+	}
+	foreach($menu as $id => $array)
+	{
+		unset($menu[$id]);
+	}
+
+	add_action('wp_print_footer_scripts', 'fe_fiction_remove_admin_menus_jscript');
+}
+function fe_fiction_remove_admin_menus_jscript()
+{
+	echo '<script>jQuery(\'#adminmenu\').css(\'width\',\'0px\').css(\'marginRight\',\'0px\').hide();jQuery(\'#wpbody\').css(\'marginLeft\',\'25px\');</script>';
 }
 
 function FeFiction_Init_Create_Custom_Fields()
