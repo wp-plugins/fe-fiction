@@ -4,12 +4,23 @@
 
 	<?php if($options_updated) { ?><div id="message" class="updated below-h2"><p><?php echo __('FE Fiction options have been updated'); ?></p></div><?php } ?>
 
-	<form method="post" action="options-general.php?page=fe-fiction-class.php">
+	<form method="post" action="admin.php?page=fe-fiction-class">
 	<?php
 		settings_fields('fe-fiction-options');
 	?>
 
 	<table class="form-table" style="width:75%;">
+	<tr>
+		<th width="25%" style="vertical-align:top;">
+	    <p><strong><?php echo __('Custom Template Files'); ?></strong></p></th>
+		<td width="75%" style="vertical-align:top;">
+			<label><input name="create_custom_post_type_file" type="checkbox" id="create_custom_post_type_file" tabindex="1" value="1" <?php if(get_option($fe_fiction_wp_options['create_custom_post_type_file']) == '1') { ?>checked="checked"<?php } ?> /><?php echo __('Yes, Create them for me'); ?></label><br />
+			<em><?php echo __('(this will attempt to create <strong>single-'.$custom_post_type.'.php</strong>.  You must have a single.php file in your active theme in order for us to create it.  If you do not have a single.php file, you will have to create the templates.)'); ?></em>
+		</td>
+	</tr>
+	<tr>
+		<td colspan="2"><hr size="1" color="#dddddd" /></td>
+	</tr>
 	<tr>
 		<th width="25%" style="vertical-align:top;">
 	    <p><strong><?php echo __('Dashboard'); ?></strong></p></th>

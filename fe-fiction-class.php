@@ -8,6 +8,7 @@ $fe_fiction_wp_options = array(
 	'custom_dashboard'=>'fe-fiction-custom_dashboard'
 	,'hide_admin_menus'=>'fe-fiction-hide_admin_menus'
 	,'enable_fe_fiction_default_role' => 'fe-fiction-default-role'
+	,'create_custom_post_type_file' => 'fe-fiction-create-custom-post-type-file'
 );
 
 $custom_post_type_args = array(
@@ -274,8 +275,8 @@ function FeFiction_Activate()
 {
 	global $wpdb,$default_role;
 
-	if ( !is_multisite() )
-		exit( 'The FE Fiction plugin is only compatible with WordPress Multisite.' );
+	//if ( !is_multisite() )
+	//	exit( 'The FE Fiction plugin is only compatible with WordPress Multisite.' );
 }
 
 //This function is called on Plugin De-Activation
@@ -291,8 +292,6 @@ function FeFiction_Init_Taxonomies()
 	global $taxonomies,$option_name;
 
 	register_post_type( $custom_post_type, $custom_post_type_args );
-	create_post_type_files( $custom_post_type );
-
 
 	foreach($taxonomies as $taxonomy_name => $taxonomy_info)
 	{
@@ -314,7 +313,7 @@ function FeFiction_Init_Taxonomies()
 
 function FeFiction_Init_Options()
 {
-	global $fe_fiction_wp_options,$fe_fiction_default_role;
+	global $fe_fiction_wp_options,$fe_fiction_default_role,$custom_post_type;
 
 	//add_filter('favorite_actions', 'no_favorites');
 	add_action('wp_print_footer_scripts', 'fe_no_favorites');
@@ -322,6 +321,9 @@ function FeFiction_Init_Options()
 	/** START OVERRIDE THE DASHBOARD WITH A NICE CLEAN OPTIONS PAGE **/
 	if(get_option($fe_fiction_wp_options['custom_dashboard']) == '1')
 	{
+		$user = wp_get_current_user();
+		update_user_option($user->ID, "screen_layout_dashboard", '1', true);
+
 		add_action('admin_menu', 'disable_default_dashboard_widgets');
 		add_action('admin_head', 'admin_register_head_new_cms_dashboard_37');
 		if(stristr('/wp-admin/index.php',$_SERVER['REQUEST_URI']))
@@ -336,13 +338,13 @@ function FeFiction_Init_Options()
 	/** END OVERRIDE THE DASHBOARD WITH A NICE CLEAN OPTIONS PAGE **/
 
 	/** START REMOVE ADMIN MENUS **/
-	if(get_option($fe_fiction_wp_options['hide_admin_menus']) == '1' && !is_super_admin() && !(current_user_can('manage_options')))
+	if(get_option($fe_fiction_wp_options['hide_admin_menus']) == '1' && !current_user_can('manage_options'))
 	{
-		add_action('admin_head', 'fe_fiction_remove_admin_menus');
+			add_action('admin_head', 'fe_fiction_remove_admin_menus');
 	}
 	else
 	{
-		if(!is_super_admin() && !(current_user_can('manage_options')))
+		if(!current_user_can('manage_options'))
 		{
 			add_action('admin_menu', 'fe_fiction_restrict_admin_menus');
 		}
@@ -362,6 +364,13 @@ function FeFiction_Init_Options()
 		}
 	}
 	/** END UPDATING DEFAULT ROLE FOR USERS **/
+
+	/** START CUSTOM POST TYPE TEMPLATE CREATE **/
+	if(get_option($fe_fiction_wp_options['create_custom_post_type_file']) == '1')
+	{
+		create_post_type_files( $custom_post_type );
+	}
+	/** END CUSTOM POST TYPE TEMPLATE CREATE **/
 }
 
 function fe_no_favorites($actions)
@@ -519,12 +528,18 @@ function create_post_type_files( $post_type ) {
 
 function FeFiction_Admin_Menu()
 {
-	add_options_page(__('FE Fiction'), __('FE Fiction'), 'Administrator', basename(__FILE__), 'FeFiction_Admin_Options_Page');
+	global $menu;
+
+	add_menu_page(__('FE Fiction Options'), __('FE Fiction Options'), 'manage_options', 'fe-fiction-class', 'FeFiction_Admin_Options_Page', '', 10 );
+	$menu[11] = array('','read',"separator",'','wp-menu-separator');
+
+	//var_dump($menu);
+	//add_options_page(__('FE Fiction'), __('FE Fiction'), 'manage_options', basename(__FILE__), 'FeFiction_Admin_Options_Page');
 }
 
 function FeFiction_Admin_Options_Page()
 {
-	global $fe_fiction_wp_options,$fe_fiction_default_role;
+	global $fe_fiction_wp_options,$fe_fiction_default_role,$custom_post_type;
     $siteurl = get_option('siteurl');
     $plugin_view_path = '/wp-content/plugins/' . basename(dirname(__FILE__)) . '/views';
 	$options_updated = false;
@@ -564,6 +579,14 @@ function FeFiction_Admin_Options_Page()
 		else
 		{
 			update_option($fe_fiction_wp_options['enable_fe_fiction_default_role'],'');
+		}
+		if(isset($_POST['create_custom_post_type_file']))
+		{
+			update_option($fe_fiction_wp_options['create_custom_post_type_file'],'1');
+		}
+		else
+		{
+			update_option($fe_fiction_wp_options['create_custom_post_type_file'],'');
 		}
 
 		/**
