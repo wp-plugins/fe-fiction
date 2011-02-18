@@ -38,5 +38,5 @@ add_action('init', 'FeFiction_Init_Options',0);
 add_action( 'admin_menu', 'FeFiction_Init_Create_Custom_Fields', 2 );
 add_action( 'admin_menu', 'FeFiction_Admin_Menu');
 add_action( 'save_post', 'FeFiction_Save_Custom_Fields', 1, 1 );
-add_shortcode('fe-fiction-submit', 'FeFiction_Site_Submit_Display');
+add_shortcode('fe-fiction', 'FeFiction_Site_Display');
 /** END FE FICTION PLUGIN **/

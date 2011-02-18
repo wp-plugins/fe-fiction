@@ -2,7 +2,7 @@
 	<div id="icon-ms-admin" class="icon32"><br></div>
 	<h2><?php echo __('FE Fiction Options'); ?></h2> 
 
-	<?php if($options_updated) { ?><div id="message" class="updated below-h2"><p><?php echo __('FE Fiction options have been updated'); ?></p></div><?php } ?>
+	<?php if(isset($options_updated) && $options_updated['success']) { ?><div id="message" class="updated below-h2"><p><?php echo __('FE Fiction options have been updated'); ?></p></div><?php } ?>
 
 	<form method="post" action="admin.php?page=fe-fiction-class">
 	<?php
@@ -12,10 +12,12 @@
 	<table class="form-table" style="width:75%;">
 	<tr>
 		<th width="25%" style="vertical-align:top;">
-	    <p><strong><?php echo __('Custom Template Files'); ?></strong></p></th>
-		<td width="75%" style="vertical-align:top;">
-			<label><input name="create_custom_post_type_file" type="checkbox" id="create_custom_post_type_file" tabindex="1" value="1" <?php if(get_option($fe_fiction_wp_options['create_custom_post_type_file']) == '1') { ?>checked="checked"<?php } ?> /><?php echo __('Yes, Create them for me'); ?></label><br />
-			<em><?php echo __('(this will attempt to create <strong>single-'.$custom_post_type.'.php</strong>.  You must have a single.php file in your active theme in order for us to create it.  If you do not have a single.php file, you will have to create the templates.)'); ?></em>
+	    <p><strong><?php echo __('Create Fiction Page'); ?></strong></p></th>
+		<td width="75%" style="vertical-align:top;"><?php if(isset($options_updated) && $options_updated['page_created']) { ?><div id="message" class="updated below-h2"><p><?php echo __('Page has been created for you'); ?></p></div><?php } ?>
+			<label><input name="create_fe_fiction_page" type="checkbox" id="create_fe_fiction_page" tabindex="1" value="1" /><?php echo __('Yes, Create the page for me'); ?></label><br />
+			<label><?php echo __('The page title'); ?>: <input name="fe_fiction_page_title" type="text" id="fe_fiction_page_title" tabindex="1" style="font-size:1.7em;" size="50" value="<?php if(get_option($fe_fiction_wp_options['fe_fiction_page_title']) != '') { echo stripslashes(get_option($fe_fiction_wp_options['fe_fiction_page_title'])); } ?>" /></label><br />
+			<em><?php echo __('(this will create a page for you that will be used to display your fiction.  This is a single page that will be used for listing all fiction and displaying individual stories)'); ?></em><br /><br />
+			<em><?php echo __('<strong>Note:</strong> you don\'t need to have us do this!  You can create the page yourself.  just add [fe-fiction] where you want the fiction listing or story to display :)'); ?></em>
 		</td>
 	</tr>
 	<tr>
@@ -24,7 +26,7 @@
 	<tr>
 		<th width="25%" style="vertical-align:top;">
 	    <p><strong><?php echo __('Dashboard'); ?></strong></p></th>
-		<td width="75%" style="vertical-align:top;">
+		<td width="75%" style="vertical-align:top;"><?php if(isset($options_updated) && isset($options_updated['custom_dashboard_enabled'])) { ?><div id="message" class="updated below-h2"><p><?php echo __('Override Dashboard option enabled'); ?></p></div><?php } ?>
 			<label><input name="custom_dashboard" type="checkbox" id="custom_dashboard" tabindex="1" value="1" <?php if(get_option($fe_fiction_wp_options['custom_dashboard']) == '1') { ?>checked="checked"<?php } ?> /><?php echo __('Override Dashboard'); ?></label><br />
 			<em><?php echo __('(this will change the standard WP dashboard and replace it with a nice options dashboard)'); ?></em>
 			<br /><strong>sample admin dashboard:</strong><br />
@@ -39,24 +41,22 @@
 	</tr>
 	<tr>
 	  <th style="vertical-align:top;"><strong><?php echo __('Enhanced Admin Interface'); ?></strong></th>
-	  <td style="vertical-align:top;"><label>
-	    <input name="hide_admin_menus" type="checkbox" id="hide_admin_menus" tabindex="1" value="1" <?php if(get_option($fe_fiction_wp_options['hide_admin_menus']) == '1') { ?>checked="checked"<?php } ?> />
-	    <?php echo __('Click to enable'); ?>
-	    </label>
-	    <br />
-	    <em><?php echo __('(Set up the admin interface so that Authors can only access their profile, read and manage comments, and manage their fiction)'); ?></em></td>
+	  <td style="vertical-align:top;"><?php if(isset($options_updated) && isset($options_updated['hide_admin_menus_enabled'])) { ?><div id="message" class="updated below-h2"><p><?php echo __('Admin menus are now hidden (except for admins)'); ?></p></div><?php } ?>
+		<label><input name="hide_admin_menus" type="checkbox" id="hide_admin_menus" tabindex="1" value="1" <?php if(get_option($fe_fiction_wp_options['hide_admin_menus']) == '1') { ?>checked="checked"<?php } ?> /><?php echo __('Click to enable'); ?></label>
+		<br />
+		<em><?php echo __('(Set up the admin interface so that Authors can only access their profile, read and manage comments, and manage their fiction)'); ?></em></td>
 	  </tr>
 	<tr>
 		<td colspan="2"><hr size="1" color="#dddddd" /></td>
 	</tr>
 	<tr>
 	  <th style="vertical-align:top;"><strong><?php echo __('Default Role'); ?></strong></th>
-	  <td style="vertical-align:top;">
+	  <td style="vertical-align:top;"><?php if(isset($options_updated) && isset($options_updated['default_role_set'])) { ?><div id="message" class="updated below-h2"><p><?php echo __('Default role has been set to Author'); ?></p></div><?php } ?>
 		<label><input name="enable_fe_fiction_default_role" type="checkbox" id="enable_fe_fiction_default_role" tabindex="1" value="1" <?php if(get_option($fe_fiction_wp_options['enable_fe_fiction_default_role']) != '') { ?>checked="checked"<?php } ?> /><?php echo __('Change the default role to Author'); ?></label>
 		<br />
 		<em><?php echo __('(Allow FE Fiction to set the default role for new users to the Author level.  The Author level allows for users to submit and publish their own stories.  It also allows them to manage the comments for their stories.  You can always not enable this and continue to manage roles yourself.)'); ?></em>
-		<br />
-		<em><?php echo __('Note: If you disable this feature after having it enabled, make sure to go to the <a href="'.(is_multisite() ? 'ms-options.php' : 'options-general.php').'">settings</a> page and ensure the default level is what you desire. Typically this is set to "subscriber"'); ?></em></td>
+		<br /><br />
+		<em><?php echo __('<strong>Note:</strong> If you disable this feature after having it enabled, make sure to go to the <a href="'.(is_multisite() ? 'ms-options.php' : 'options-general.php').'">settings</a> page and ensure the default level is what you desire. Typically this is set to "subscriber"'); ?></em></td>
 	  </tr>
 	<!-- 
 	<tr>
