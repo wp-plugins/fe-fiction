@@ -5,12 +5,13 @@ $custom_post_type = 'fiction';
 $fe_fiction_default_role = 'author';
 
 $fe_fiction_wp_options = array(
-	'custom_dashboard'=>'fe-fiction-custom_dashboard'
-	,'hide_admin_menus'=>'fe-fiction-hide_admin_menus'
+	'custom_dashboard' => 'fe-fiction-custom_dashboard'
+	,'hide_admin_menus' => 'fe-fiction-hide_admin_menus'
 	,'enable_fe_fiction_default_role' => 'fe-fiction-default-role'
 	,'create_custom_post_type_file' => 'fe-fiction-create-custom-post-type-file'
 	,'create_fe_fiction_page' => 'fe-fiction-create-page'
 	,'fe_fiction_page_title' => 'fe-fiction-page-title'
+	,'fe_fiction_page_page_id' => 'fe-fiction-page-id'
 );
 
 $custom_post_type_args = array(
@@ -76,7 +77,36 @@ $fic_post_custom_fields = array(
 );
 
 $taxonomies = array(
-		'genre' => Array
+		'story_author' => Array
+			(
+				'object_type' => Array ('fiction')
+				,'args' => Array (
+					'labels' => Array 
+					(
+						'name' => 'Authors'
+						,'singular_name' => 'Author'
+						,'add_new_item' => 'Add New Author'
+						,'new_item_name' => 'New Author Name'
+						,'edit_item' => 'Edit Author'
+						,'update_item' => 'Update Author'
+						,'search_items' => 'Search Authors'
+						,'popular_items' => 'Popular Authors'
+						,'all_items' => 'All Authors'
+						,'parent_item' => 'Parent Author'
+						,'parent_item_colon' => 'Parent Author:'
+						,'add_or_remove_items' => 'Add or remove authors'
+						,'separate_items_with_commas' => 'Separate authors with commas'
+						,'choose_from_most_used' => 'All Author'
+					)
+					,'show_ui' => (bool) 0
+					,'show_tagcloud' => (bool) 0
+					,'show_in_nav_menus' => (bool) 0
+					,'hierarchical' => (bool) 0
+					,'rewrite' => (bool) 0
+					,'query_var' => (bool) 1
+				)
+			)
+		,'genre' => Array
 			(
 				'object_type' => Array ('fiction')
 				,'args' => Array (
@@ -378,8 +408,45 @@ function FeFiction_Init_Options()
 	}
 	**/
 	/** END CUSTOM POST TYPE TEMPLATE CREATE **/
-
 }
+
+// Remember to flush_rules() when adding rules
+function FeFiction_FlushRules(){
+	global $wp_rewrite;
+   	$wp_rewrite->flush_rules();
+}
+
+// Adding a new rule
+function FeFiction_Insert_Rewrite_Rules($wp_rewrite)
+{
+	global $fe_fiction_wp_options;
+
+	$fe_fiction_page_page_id = get_option($fe_fiction_wp_options['fe_fiction_page_page_id'],'0');
+	$permalink = get_permalink( $fe_fiction_page_page_id );
+	$pagename = str_replace('/','',str_replace(home_url().'/','',$permalink));
+
+	$new_rules = array( 
+		$pagename.'/genre/(.+)'=>'index.php?pagename='.$pagename.'&genre='.$wp_rewrite->preg_index(1)
+		,$pagename.'/rating/(.+)'=>'index.php?pagename='.$pagename.'&rating='.$wp_rewrite->preg_index(1)
+		,$pagename.'/story_category/(.+)'=>'index.php?pagename='.$pagename.'&story_category='.$wp_rewrite->preg_index(1)
+		,$pagename.'/story_author/(.+)'=>'index.php?pagename='.$pagename.'&story_author='.$wp_rewrite->preg_index(1)
+	);
+
+	$wp_rewrite->rules = $new_rules + $wp_rewrite->rules;
+}
+
+// Adding the id var so that WP recognizes it
+function FeFiction_Insert_Rewrite_QueryVars($vars)
+{
+	$fe_fiction_page_page_id = get_option($fe_fiction_wp_options['fe_fiction_page_page_id'],'0');
+	$permalink = get_permalink( $fe_fiction_page_page_id );
+	$pagename = str_replace('/','',str_replace(home_url().'/','',$permalink));
+
+	array_push($vars, $pagename);
+	array_push($vars, 'author');
+    return $vars;
+}
+
 
 /**
  * Add Settings link to plugins
@@ -395,6 +462,7 @@ function fe_fiction_add_settings_link($links, $file) {
 function fe_no_favorites($actions)
 {
 	echo '<script>jQuery(\'#favorite-actions\').css(\'width\',\'0px\').hide();</script>';
+	//var_dump($GLOBALS);
 }
 
 function new_cms_dashboard_widget_function() {
@@ -644,23 +712,35 @@ function FeFiction_Admin_Options_Page()
 		/** START FICTION PAGE CREATION **/
 		if(isset($_POST['create_fe_fiction_page']))
 		{
-			$new_page_id = create_fe_fiction_page($_POST['fe_fiction_page_title']);
-			if($new_page_id > 0)
+			$new_page_id = 0;
+			if(strtolower($_POST['fe_fiction_page_title']) == 'fiction')
 			{
-				$options_updated['page_created'] = true;
+				$options_updated['page_created'] = false;
+				$options_updated['page_created_error'] = __('Please do not use "Fiction" or "fiction" as your page title.  This is reserved.');
 			}
 			else
 			{
-				$options_updated['page_created'] = false;
+				$new_page_id = create_fe_fiction_page($_POST['fe_fiction_page_title']);
+				if($new_page_id > 0)
+				{
+					$options_updated['page_created'] = true;
+					update_option($fe_fiction_wp_options['fe_fiction_page_page_id'],$new_page_id);
+				}
+				else
+				{
+					$options_updated['page_created'] = false;
+					update_option($fe_fiction_wp_options['fe_fiction_page_page_id'],'0');
+				}
+				update_option($fe_fiction_wp_options['create_fe_fiction_page'],'1');
 			}
-			update_option($fe_fiction_wp_options['create_fe_fiction_page'],'1');
 		}
 		else
 		{
 			$options_updated['page_created'] = false;
 			update_option($fe_fiction_wp_options['create_fe_fiction_page'],'');
 		}
-		if(isset($_POST['fe_fiction_page_title']))
+
+		if($options_updated['page_created_error'] == '' && isset($_POST['fe_fiction_page_title']))
 		{
 			update_option($fe_fiction_wp_options['fe_fiction_page_title'],$_POST['fe_fiction_page_title']);
 		}
@@ -668,7 +748,6 @@ function FeFiction_Admin_Options_Page()
 		{
 			update_option($fe_fiction_wp_options['fe_fiction_page_title'],'');
 		}
-
 		/** END FICTION PAGE CREATION **/
 
 		/**
@@ -693,12 +772,15 @@ function FeFiction_Admin_Options_Page()
 **/
 function FeFiction_Site_Display()
 {
-	global $taxonomies;
-var_dump($GLOBALS);
-exit;
+	global $taxonomies,$fe_fiction_wp_options,$option_name,$custom_post_type,$fe_fiction_default_role;
+
+	$fe_fiction_page_page_id = get_option($fe_fiction_wp_options['fe_fiction_page_page_id'],'0');
+	$permalink = get_permalink( $fe_fiction_page_page_id );
+	$pagename = str_replace('/','',str_replace(home_url().'/','',$permalink));
+
 	$my_taxonomies = array_keys($taxonomies);
 
-	include_once('views/fe-fiction-site-submit-form.php');
+	include_once('views/fe-fiction-site-browse.php');
 }
 
 // disable default dashboard widgets

@@ -3,6 +3,7 @@
 	<h2><?php echo __('FE Fiction Options'); ?></h2> 
 
 	<?php if(isset($options_updated) && $options_updated['success']) { ?><div id="message" class="updated below-h2"><p><?php echo __('FE Fiction options have been updated'); ?></p></div><?php } ?>
+	<?php if(isset($options_updated['page_created_error']) && $options_updated['page_created_error'] != '') { ?><div id="error" class="error below-h2"><p><?php echo __('There were complications with page creation.  Please see message below.'); ?></p></div><?php } ?>
 
 	<form method="post" action="admin.php?page=fe-fiction-class">
 	<?php
@@ -14,9 +15,10 @@
 		<th width="25%" style="vertical-align:top;">
 	    <p><strong><?php echo __('Create Fiction Page'); ?></strong></p></th>
 		<td width="75%" style="vertical-align:top;"><?php if(isset($options_updated) && $options_updated['page_created']) { ?><div id="message" class="updated below-h2"><p><?php echo __('Page has been created for you'); ?></p></div><?php } ?>
+		<?php if(isset($options_updated) && !$options_updated['page_created'] && $options_updated['page_created_error'] != '') { ?><div id="error" class="error below-h2"><p><?php echo $options_updated['page_created_error']; ?></p></div><?php } ?>		
 			<label><input name="create_fe_fiction_page" type="checkbox" id="create_fe_fiction_page" tabindex="1" value="1" /><?php echo __('Yes, Create the page for me'); ?></label><br />
-			<label><?php echo __('The page title'); ?>: <input name="fe_fiction_page_title" type="text" id="fe_fiction_page_title" tabindex="1" style="font-size:1.7em;" size="50" value="<?php if(get_option($fe_fiction_wp_options['fe_fiction_page_title']) != '') { echo stripslashes(get_option($fe_fiction_wp_options['fe_fiction_page_title'])); } ?>" /></label><br />
-			<em><?php echo __('(this will create a page for you that will be used to display your fiction.  This is a single page that will be used for listing all fiction and displaying individual stories)'); ?></em><br /><br />
+			<label><?php echo __('The page title (anything other than "Fiction")'); ?>: <input name="fe_fiction_page_title" type="text" id="fe_fiction_page_title" tabindex="1" style="font-size:1.7em;" size="50" value="<?php if(get_option($fe_fiction_wp_options['fe_fiction_page_title']) != '') { echo stripslashes(get_option($fe_fiction_wp_options['fe_fiction_page_title'])); } ?>" /></label><br />
+			<em><?php echo __('(this will create a page for you that will be used to display your fiction list.  This is a single page that will be used for listing all fiction and fictin search results)'); ?></em><br /><br />
 			<em><?php echo __('<strong>Note:</strong> you don\'t need to have us do this!  You can create the page yourself.  just add [fe-fiction] where you want the fiction listing or story to display :)'); ?></em>
 		</td>
 	</tr>
