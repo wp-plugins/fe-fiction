@@ -1,4 +1,4 @@
-<div id="post-<?php the_ID(); ?>" <?php post_class(); ?>>
+<div id="post-<?php FeFiction_the_ID(); ?>" <?php post_class(); ?>>
 	<h2 class="entry-title"><a href="<?php FeFiction_the_permalink(post_permalink()); ?>" title="<?php printf( esc_attr__( 'Permalink to %s'), the_title_attribute( 'echo=0' ) ); ?>" rel="bookmark"><?php the_title(); ?></a></h2>
 
 	<div class="entry-meta">
@@ -17,10 +17,17 @@
 			)
 		);
 		?>
+
+		<br /><?php echo FeFiction_the_terms( FeFiction_the_ID(false), 'genre', '<strong>'.__('Genre(s)').':</strong> ', ' , ', '' ); ?>
+		<br /><?php echo FeFiction_the_terms( FeFiction_the_ID(false), 'rating', '<strong>'.__('Rating').':</strong> ', ' , ', '' ); ?>
+		<br /><?php echo FeFiction_the_terms( FeFiction_the_ID(false), 'story_category', '<strong>'.__('Categories(s)').':</strong> ', ' , ', '' ); ?>
+		<br /><?php echo FeFiction_the_metas( FeFiction_the_ID(false), 'copyright', '<strong>'.__('Copyright').':</strong><br />','' ); ?>
+		<br /><?php echo FeFiction_the_metas( FeFiction_the_ID(false), 'disclaimer', '<strong>'.__('Disclaimer').':</strong><br />','' ); ?>
+		<hr />
 	</div>
 
 	<div class="entry-summary">
-		<?php the_excerpt(); ?>
+		<?php FeFiction_the_excerpt(FeFiction_the_permalink(post_permalink(),false)); ?>
 	</div>
 
 </div>

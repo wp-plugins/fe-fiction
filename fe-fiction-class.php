@@ -307,8 +307,8 @@ function FeFiction_Activate()
 {
 	global $wpdb,$default_role;
 
-	//if ( !is_multisite() )
-	//	exit( 'The FE Fiction plugin is only compatible with WordPress Multisite.' );
+	if ( trim(get_option('permalink_structure')) == '')
+		exit( '<p style="font-family:arial,helvetica,sans-serif;color:red;">The FE Fiction plugin currently only works if permalinks are configured and enabled (anything other than "Default". Please enable permalinks and try again.)</p>' );
 }
 
 //This function is called on Plugin De-Activation
@@ -466,6 +466,23 @@ function fe_no_favorites($actions)
 {
 	echo '<script>jQuery(\'#favorite-actions\').css(\'width\',\'0px\').hide();</script>';
 	//var_dump($GLOBALS);
+}
+
+function fe_admin_options_js_scripts()
+{
+	global $fe_fiction_wp_options;
+
+	$current_fe_fiction_page = get_option($fe_fiction_wp_options['fe_fiction_page_page_id'],'0');
+
+	if($current_fe_fiction_page != '0')
+	{
+		echo '<script>';
+		echo 'function FeFiction_Confirm_Page_Delete() { ';
+		echo 'var confirmAnswer = confirm("'.__('Are you sure you want to delete the page?').'");';
+		echo 'if(confirmAnswer) { location.href="'.str_replace('&amp;','&',get_delete_post_link($current_fe_fiction_page, true)).'"; } else { }';
+		echo '}';
+		echo '</script>';
+	}
 }
 
 function new_cms_dashboard_widget_function() {
@@ -753,18 +770,22 @@ function FeFiction_Admin_Options_Page()
 		}
 		/** END FICTION PAGE CREATION **/
 
-		/**
-		if(isset($_POST['update_roles']) && is_array($_POST['update_roles']))
-		{
-			foreach($_POST['update_roles'] as $role_name)
-			{
-
-			}
-		}
-		**/
-
 		$options_updated['success'] = true;
 	}
+
+	if ( isset($_GET['trashed']) && (int) $_GET['trashed'] && isset($_GET['ids']) && (int) $_GET['ids'] )
+	{
+		update_option($fe_fiction_wp_options['fe_fiction_page_page_id'],'0');
+		update_option($fe_fiction_wp_options['fe_fiction_page_title'],'');
+		update_option($fe_fiction_wp_options['create_fe_fiction_page'],'');
+		$options_updated['page_deleted'] = true;
+	}
+
+	$current_fe_fiction_page = get_option($fe_fiction_wp_options['fe_fiction_page_page_id'],'0');
+
+	//add_filter('favorite_actions', 'no_favorites');
+	add_action('wp_print_footer_scripts', 'fe_admin_options_js_scripts');
+
 	include_once('views/fe-fiction-admin-options-form.php');
 }
 
