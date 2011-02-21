@@ -430,6 +430,7 @@ function FeFiction_Insert_Rewrite_Rules($wp_rewrite)
 		,$pagename.'/rating/(.+)'=>'index.php?pagename='.$pagename.'&rating='.$wp_rewrite->preg_index(1)
 		,$pagename.'/story_category/(.+)'=>'index.php?pagename='.$pagename.'&story_category='.$wp_rewrite->preg_index(1)
 		,$pagename.'/story_author/(.+)'=>'index.php?pagename='.$pagename.'&story_author='.$wp_rewrite->preg_index(1)
+		,$pagename.'/read_story/(.+)'=>'index.php?pagename='.$pagename.'&story_title='.$wp_rewrite->preg_index(1)
 	);
 
 	$wp_rewrite->rules = $new_rules + $wp_rewrite->rules;
@@ -444,6 +445,8 @@ function FeFiction_Insert_Rewrite_QueryVars($vars)
 
 	array_push($vars, $pagename);
 	array_push($vars, 'author');
+	array_push($vars, 'read_story');
+	array_push($vars, 'story_title');
     return $vars;
 }
 
@@ -772,7 +775,7 @@ function FeFiction_Admin_Options_Page()
 **/
 function FeFiction_Site_Display()
 {
-	global $taxonomies,$fe_fiction_wp_options,$option_name,$custom_post_type,$fe_fiction_default_role;
+	global $taxonomies,$fe_fiction_wp_options,$option_name,$custom_post_type,$fe_fiction_default_role,$wp_query;
 
 	$fe_fiction_page_page_id = get_option($fe_fiction_wp_options['fe_fiction_page_page_id'],'0');
 	$permalink = get_permalink( $fe_fiction_page_page_id );
@@ -780,6 +783,34 @@ function FeFiction_Site_Display()
 
 	$my_taxonomies = array_keys($taxonomies);
 
+	$query_posts_str = 'post_type=fiction';
+
+	foreach($my_taxonomies as $taxonomy)
+	{
+		if(array_key_exists($taxonomy,$wp_query->query_vars) && $wp_query->query_vars[$taxonomy] != '')
+		{
+			if($taxonomy == 'story_author')
+			{
+				$query_field = 'author_name';
+			}
+			else
+			{
+				$query_field = $taxonomy;
+			}
+			$query_posts_str .= '&'.$query_field.'='.$wp_query->query_vars[$taxonomy];
+		}
+	}
+
+	if(array_key_exists('story_title',$wp_query->query_vars))
+	{
+		$query_posts_str .= '&name='.$wp_query->query_vars['story_title'];
+	}
+
+	$query_stories = query_posts($query_posts_str);
+
+	$num_stories = count($query_stories);
+
+	include_once('fe-fiction-site-functions.php');
 	include_once('views/fe-fiction-site-browse.php');
 }
 
