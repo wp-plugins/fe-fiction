@@ -431,6 +431,7 @@ function FeFiction_Insert_Rewrite_Rules($wp_rewrite)
 		,$pagename.'/story_category/(.+)'=>'index.php?pagename='.$pagename.'&story_category='.$wp_rewrite->preg_index(1)
 		,$pagename.'/story_author/(.+)'=>'index.php?pagename='.$pagename.'&story_author='.$wp_rewrite->preg_index(1)
 		,$pagename.'/read_story/(.+)'=>'index.php?pagename='.$pagename.'&story_title='.$wp_rewrite->preg_index(1)
+		,$pagename.'/page/(.+)'=>'index.php?pagename='.$pagename.'&page='.$wp_rewrite->preg_index(1)
 	);
 
 	$wp_rewrite->rules = $new_rules + $wp_rewrite->rules;
@@ -827,12 +828,24 @@ function FeFiction_Site_Display()
 		$query_posts_str .= '&name='.$wp_query->query_vars['story_title'];
 	}
 
+	if(array_key_exists('page',$wp_query->query_vars))
+	{
+		$query_posts_str .= '&paged='.$wp_query->query_vars['page'];
+	}
+
 	$query_stories = query_posts($query_posts_str);
 
 	$num_stories = count($query_stories);
 
 	include_once('fe-fiction-site-functions.php');
 	include_once('views/fe-fiction-site-browse.php');
+}
+
+function FeFiction_Site_Display_CSS()
+{
+    $siteurl = get_option('siteurl');
+    $url = $siteurl . '/wp-content/plugins/' . basename(dirname(__FILE__)) . '/views/fe-fiction-pagination.css';
+	echo '<link rel="stylesheet" type="text/css" media="all" href="'.$url.'" />';
 }
 
 // disable default dashboard widgets

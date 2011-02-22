@@ -41,5 +41,7 @@ add_filter('init','FeFiction_FlushRules');
 add_action( 'admin_menu', 'FeFiction_Init_Create_Custom_Fields', 2 );
 add_action( 'admin_menu', 'FeFiction_Admin_Menu');
 add_action( 'save_post', 'FeFiction_Save_Custom_Fields', 1, 1 );
+add_action('wp_head', 'FeFiction_Site_Display_CSS');
 add_shortcode('fe-fiction', 'FeFiction_Site_Display');
+
 /** END FE FICTION PLUGIN **/

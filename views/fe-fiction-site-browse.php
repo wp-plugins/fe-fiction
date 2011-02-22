@@ -1,5 +1,10 @@
 <?php
-//The Loop
+
+if (function_exists("FeFiction_Pagination")) {
+	FeFiction_Pagination($wp_query->max_num_pages,$wp_query->query_vars['page']);
+	echo '<br />';
+}
+
 if ( have_posts() ) : while ( have_posts() ) : the_post();
 	if($num_stories > 1)
 	{
@@ -28,7 +33,10 @@ if ( ! have_posts() ) : ?>
 <?php
 endif;
 
+if (function_exists("FeFiction_Pagination")) {
+	FeFiction_Pagination($wp_query->max_num_pages,$wp_query->query_vars['page']);
+}
+
 //Reset Query
 wp_reset_query();
-
 ?>
