@@ -1,4 +1,5 @@
 <?php
+$plugin_dir = basename(dirname(__FILE__));
 
 $option_name = 'fe_fiction_loaded';
 $custom_post_type = 'fiction';
@@ -345,7 +346,9 @@ function FeFiction_Init_Taxonomies()
 
 function FeFiction_Init_Options()
 {
-	global $fe_fiction_wp_options,$fe_fiction_default_role,$custom_post_type;
+	global $fe_fiction_wp_options,$fe_fiction_default_role,$custom_post_type,$plugin_dir;
+
+	load_plugin_textdomain( 'fe-fiction', null, $plugin_dir );
 
 	/** add settings link to the plugins page for our plugin **/
 	add_filter('plugin_action_links', 'fe_fiction_add_settings_link', 10, 2 );
@@ -457,7 +460,7 @@ function FeFiction_Insert_Rewrite_QueryVars($vars)
  */
 function fe_fiction_add_settings_link($links, $file) {
 	if ($file == 'fe-fiction/fe-fiction-main.php'){
-		$settings_link = '<a href="admin.php?page=fe-fiction-class">'.__("Settings").'</a>';
+		$settings_link = '<a href="admin.php?page=fe-fiction-class">'.__("Settings",'fe-fiction').'</a>';
 		array_unshift($links, $settings_link);
 	}
 	return $links;
@@ -479,7 +482,7 @@ function fe_admin_options_js_scripts()
 	{
 		echo '<script>';
 		echo 'function FeFiction_Confirm_Page_Delete() { ';
-		echo 'var confirmAnswer = confirm("'.__('Are you sure you want to delete the page?').'");';
+		echo 'var confirmAnswer = confirm("'.__('Are you sure you want to delete the page?','fe-fiction').'");';
 		echo 'if(confirmAnswer) { location.href="'.str_replace('&amp;','&',get_delete_post_link($current_fe_fiction_page, true)).'"; } else { }';
 		echo '}';
 		echo '</script>';
@@ -513,8 +516,10 @@ function new_cms_dashboard_widgets_pages() {
 } 
 
 function admin_register_head_new_cms_dashboard_37() {
+	global $plugin_dir;
+
     $siteurl = get_option('siteurl');
-    $url = $siteurl . '/wp-content/plugins/' . basename(dirname(__FILE__)) . '/new_dashboard.css';
+    $url = $siteurl . '/wp-content/plugins/' . $plugin_dir . '/new_dashboard.css';
     echo "<link rel='stylesheet' type='text/css' href='$url' />\n";
 }
 
@@ -659,18 +664,19 @@ function FeFiction_Admin_Menu()
 {
 	global $menu;
 
-	add_menu_page(__('FE Fiction Options'), __('FE Fiction Options'), 'manage_options', 'fe-fiction-class', 'FeFiction_Admin_Options_Page', '', 10 );
+	add_menu_page(__('FE Fiction Options','fe-fiction'), __('FE Fiction Options','fe-fiction'), 'manage_options', 'fe-fiction-class', 'FeFiction_Admin_Options_Page', '', 10 );
 	$menu[11] = array('','read',"separator",'','wp-menu-separator');
 
 	//var_dump($menu);
-	//add_options_page(__('FE Fiction'), __('FE Fiction'), 'manage_options', basename(__FILE__), 'FeFiction_Admin_Options_Page');
+	//add_options_page(__('FE Fiction','fe-fiction'), __('FE Fiction','fe-fiction'), 'manage_options', basename(__FILE__), 'FeFiction_Admin_Options_Page');
 }
 
 function FeFiction_Admin_Options_Page()
 {
-	global $fe_fiction_wp_options,$fe_fiction_default_role,$custom_post_type;
-    $siteurl = get_option('siteurl');
-    $plugin_view_path = '/wp-content/plugins/' . basename(dirname(__FILE__)) . '/views';
+	global $fe_fiction_wp_options,$fe_fiction_default_role,$custom_post_type,$plugin_dir;
+
+	$siteurl = get_option('siteurl');
+    $plugin_view_path = '/wp-content/plugins/' . $plugin_dir . '/views';
 	$options_updated['success'] = false;
 
 	if(isset($_POST) && is_array($_POST) && isset($_POST['Submit']))
@@ -737,7 +743,7 @@ function FeFiction_Admin_Options_Page()
 			if(strtolower($_POST['fe_fiction_page_title']) == 'fiction')
 			{
 				$options_updated['page_created'] = false;
-				$options_updated['page_created_error'] = __('Please do not use "Fiction" or "fiction" as your page title.  This is reserved.');
+				$options_updated['page_created_error'] = __('Please do not use "Fiction" or "fiction" as your page title.  This is reserved.','fe-fiction');
 			}
 			else
 			{
@@ -843,8 +849,10 @@ function FeFiction_Site_Display()
 
 function FeFiction_Site_Display_CSS()
 {
+	global $plugin_dir;
+
     $siteurl = get_option('siteurl');
-    $url = $siteurl . '/wp-content/plugins/' . basename(dirname(__FILE__)) . '/views/fe-fiction-pagination.css';
+    $url = $siteurl . '/wp-content/plugins/' . $plugin_dir . '/views/fe-fiction-pagination.css';
 	echo '<link rel="stylesheet" type="text/css" media="all" href="'.$url.'" />';
 }
 

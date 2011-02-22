@@ -59,7 +59,7 @@ function FeFiction_the_terms($post_ID,$name,$before,$separator,$after)
 
 	if($the_term == '')
 	{
-		echo $before.' '.__('N/A');
+		echo $before.' '.__('N/A','fe-fiction');
 	}
 	else
 	{
@@ -74,7 +74,7 @@ function FeFiction_the_metas($post_ID,$name,$display_before,$display_after)
 	$the_meta = get_post_meta( $post_ID, $fic_post_custom_fields_prefix.$name, true );
 	if($the_meta == '')
 	{
-		$the_meta = __('N/A');
+		$the_meta = __('N/A','fe-fiction');
 	}
 	echo $display_before.$the_meta.$display_after;
 }
