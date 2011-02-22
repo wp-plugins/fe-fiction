@@ -677,7 +677,14 @@ function FeFiction_Admin_Options_Page()
 
 	$siteurl = get_option('siteurl');
     $plugin_view_path = '/wp-content/plugins/' . $plugin_dir . '/views';
+
 	$options_updated['success'] = false;
+	$options_updated['hide_admin_menus_enabled'] = false;
+	$options_updated['page_created_error'] = '';
+	$options_updated['page_created'] = false;
+	$options_updated['page_deleted'] = false;
+	$options_updated['default_role_set'] = false;
+	$options_updated['custom_dashboard_enabled'] = false;
 
 	if(isset($_POST) && is_array($_POST) && isset($_POST['Submit']))
 	{
@@ -744,6 +751,11 @@ function FeFiction_Admin_Options_Page()
 			{
 				$options_updated['page_created'] = false;
 				$options_updated['page_created_error'] = __('Please do not use "Fiction" or "fiction" as your page title.  This is reserved.','fe-fiction');
+			}
+			elseif(trim($_POST['fe_fiction_page_title']) == '')
+			{
+				$options_updated['page_created'] = false;
+				$options_updated['page_created_error'] = __('We need a title for the page if we are to create one for you.','fe-fiction');
 			}
 			else
 			{

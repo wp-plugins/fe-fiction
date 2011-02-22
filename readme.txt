@@ -7,24 +7,43 @@ Stable tag: 3.0
 
 == Description ==
 
-FE Fiction provides ability to manage stories with genres, categories, ratings, etc. This is a fairly straight forward plugin, still in its infancy. Soon to be completed will be front-end posting, search, browsing, and more.
+FE Fiction provides ability to manage stories with genres, categories, ratings, as well as browse and read stories on the site.
+
+This plugin sets everything up for you, including preset genres and ratings (which you can change at your leasure).  We have left categories empty, so it is important
+that you set up your categories before you or your users start submitting content.  Having no categories will not break anything, though.
+
+There is a simple settings page that allows you to do a few things:
+
+#create the page that will be used to browse (story listings) and read stories, including basic filtering (we will have full search in a future realease)
+#set the default user role to "Author".  Author role is the required minimum role to allow users to both submit and manage their own stories. Author role allows the "publish" capability, which is important.  Without this role, users will only be able to submit for review and publish by an Author or above role user.
+##we may enhanced this at a later date to allow for specifying what role to set instead of forcing the Author role
+#allow you to augment the WP Admin interface to provide users with quick and simple access to what areas of the admin they are permitted to use.  In this case, we take care to ensure that Author's cannot manage general posts and pages and only allow them to manage their stories.
+#allow you to hide, for non administrators, the WP Admin menu, so what they see is the augmented interface only.
 
 == Installation ==
 
 Installation procedure:
 
-Very simple!  Just install and network activate!
+#activate
+#go to the "Settings" page
+##There is a simple settings page that allows you to do a few things:
+###create the page that will be used to browse (story listings) and read stories, including basic filtering (we will have full search in a future realease)
+###set the default user role to "Author".  Author role is the required minimum role to allow users to both submit and manage their own stories. Author role allows the "publish" capability, which is important.  Without this role, users will only be able to submit for review and publish by an Author or above role user.
+####we may enhanced this at a later date to allow for specifying what role to set instead of forcing the Author role
+###allow you to augment the WP Admin interface to provide users with quick and simple access to what areas of the admin they are permitted to use.  In this case, we take care to ensure that Author's cannot manage general posts and pages and only allow them to manage their stories.
+###allow you to hide, for non administrators, the WP Admin menu, so what they see is the augmented interface only.
+#that's it!
 
 == Frequently Asked Questions ==
 
-Under Construction
+None at this time
 
 == Screenshots ==
 
-Coming ...
+None at this time
 
 == Special Thanks to ==
-N/A
+
 
 == Changelog ==
 = 0.1a =

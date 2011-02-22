@@ -2,7 +2,7 @@
 /*
 Plugin Name: FE Fiction
 Plugin URI: http://wordpress.org/extend/plugins/fe-fiction/
-Description: FE Fiction provides ability to manage stories with genres, categories, ratings, etc. This is a fairly straight forward plugin, still in its infancy. Soon to be completed will be front-end posting, search, browsing, and more.
+Description: FE Fiction provides ability to manage stories with genres, categories, ratings, as well as browse and read stories on the site.
 Version: 0.1a
 Author: Chad Horton
 Author URI: http://www.fandomentertainment.com/
