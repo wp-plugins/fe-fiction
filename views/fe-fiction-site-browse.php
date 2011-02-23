@@ -1,5 +1,4 @@
 <?php
-
 if (function_exists("FeFiction_Pagination")) {
 	FeFiction_Pagination($wp_query->max_num_pages,$wp_query->query_vars['page']);
 	echo '<br />';
@@ -39,4 +38,3 @@ if (function_exists("FeFiction_Pagination")) {
 
 //Reset Query
 wp_reset_query();
-?>

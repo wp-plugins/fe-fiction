@@ -7,6 +7,8 @@
 		<br /><?php echo FeFiction_the_terms( FeFiction_the_ID(false), 'genre', '<strong>'.__('Genre(s)','fe-fiction').':</strong> ', ' , ', '' ); ?>
 		<br /><?php echo FeFiction_the_terms( FeFiction_the_ID(false), 'rating', '<strong>'.__('Rating','fe-fiction').':</strong> ', ' , ', '' ); ?>
 		<br /><?php echo FeFiction_the_terms( FeFiction_the_ID(false), 'story_category', '<strong>'.__('Categories(s)','fe-fiction').':</strong> ', ' , ', '' ); ?>
+		<br /><strong><?php echo __('Number of Comments','fe-fiction'); ?>:</strong> <?php comments_number(__('None','fe-fiction'),__('1','fe-fiction'),__('%','fe-fiction')); ?>
+
 		<br /><?php echo FeFiction_the_metas( FeFiction_the_ID(false), 'copyright', '<strong>'.__('Copyright','fe-fiction').':</strong> ','' ); ?>
 		<br /><?php echo FeFiction_the_metas( FeFiction_the_ID(false), 'disclaimer', '<strong>'.__('Disclaimer','fe-fiction').':</strong><br />','' ); ?>
 		<br />

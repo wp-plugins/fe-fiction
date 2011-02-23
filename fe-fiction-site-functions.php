@@ -133,4 +133,3 @@ function FeFiction_Pagination($pages = '',$paged=1, $range = 4)
 		echo "</div>\n";
 	}
 }
-?>
