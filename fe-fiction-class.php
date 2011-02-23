@@ -422,13 +422,32 @@ function FeFiction_FlushRules(){
 // Adding a new rule
 function FeFiction_Insert_Rewrite_Rules($wp_rewrite)
 {
-	global $fe_fiction_wp_options;
+	global $fe_fiction_wp_options,$custom_post_type;
 
 	$fe_fiction_page_page_id = get_option($fe_fiction_wp_options['fe_fiction_page_page_id'],'0');
 	$permalink = get_permalink( $fe_fiction_page_page_id );
 	$pagename = str_replace('/','',str_replace(home_url().'/','',$permalink));
 
 	$new_rules = array( 
+		/**
+		$custom_post_type.'/[^/]+/attachment/([^/]+)/?$'=>'index.php?pagename='.$pagename.'&attachment='.$matches[1];
+		,$custom_post_type.'/[^/]+/attachment/([^/]+)/trackback/?$'=>'index.php?pagename='.$pagename.'&attachment='.$matches[1].'&tb=1';
+		,$custom_post_type.'/[^/]+/attachment/([^/]+)/feed/(feed|rdf|rss|rss2|atom)/?$'=>'index.php?pagename='.$pagename.'&attachment='.$matches[1].'&feed='.$matches[2];
+		,$custom_post_type.'/[^/]+/attachment/([^/]+)/(feed|rdf|rss|rss2|atom)/?$'=>'index.php?pagename='.$pagename.'&attachment='.$matches[1].'&feed='.$matches[2];
+		,$custom_post_type.'/[^/]+/attachment/([^/]+)/comment-page-([0-9]{1,})/?$'=>'index.php?pagename='.$pagename.'&attachment='.$matches[1].'&cpage='.$matches[2];
+		,$custom_post_type.'/([^/]+)/trackback/?$'=>'index.php?pagename='.$pagename.'&fiction='.$matches[1].'&tb=1';
+		,$custom_post_type.'/([^/]+)/feed/(feed|rdf|rss|rss2|atom)/?$'=>'index.php?pagename='.$pagename.'&fiction='.$matches[1].'&feed='.$matches[2];
+		,$custom_post_type.'/([^/]+)/(feed|rdf|rss|rss2|atom)/?$'=>'index.php?pagename='.$pagename.'&fiction='.$matches[1].'&feed='.$matches[2];
+		,$custom_post_type.'/([^/]+)/page/?([0-9]{1,})/?$'=>'index.php?pagename='.$pagename.'&fiction='.$matches[1].'&paged='.$matches[2];
+		,$custom_post_type.'/([^/]+)/comment-page-([0-9]{1,})/?$'=>'index.php?pagename='.$pagename.'&fiction='.$matches[1].'&cpage='.$matches[2];
+		,$custom_post_type.'/([^/]+)(/[0-9]+)?/?$'=>'index.php?pagename='.$pagename.'&fiction='.$matches[1].'&page='.$matches[2];
+		,$custom_post_type.'/[^/]+/([^/]+)/?$'=>'index.php?pagename='.$pagename.'&attachment='.$matches[1];
+		,$custom_post_type.'/[^/]+/([^/]+)/trackback/?$'=>'index.php?pagename='.$pagename.'&attachment='.$matches[1].'&tb=1';
+		,$custom_post_type.'/[^/]+/([^/]+)/feed/(feed|rdf|rss|rss2|atom)/?$'=>'index.php?pagename='.$pagename.'&attachment='.$matches[1].'&feed='.$matches[2];
+		,$custom_post_type.'/[^/]+/([^/]+)/(feed|rdf|rss|rss2|atom)/?$'=>'index.php?pagename='.$pagename.'&attachment='.$matches[1].'&feed='.$matches[2];
+		,$custom_post_type.'/[^/]+/([^/]+)/comment-page-([0-9]{1,})/?$'=>'index.php?pagename='.$pagename.'&attachment='.$matches[1].'&cpage='.$matches[2];
+		**/
+
 		$pagename.'/genre/(.+)'=>'index.php?pagename='.$pagename.'&genre='.$wp_rewrite->preg_index(1)
 		,$pagename.'/rating/(.+)'=>'index.php?pagename='.$pagename.'&rating='.$wp_rewrite->preg_index(1)
 		,$pagename.'/story_category/(.+)'=>'index.php?pagename='.$pagename.'&story_category='.$wp_rewrite->preg_index(1)
@@ -436,7 +455,9 @@ function FeFiction_Insert_Rewrite_Rules($wp_rewrite)
 		,$pagename.'/read_story/(.+)'=>'index.php?pagename='.$pagename.'&story_title='.$wp_rewrite->preg_index(1)
 		,$pagename.'/page/(.+)'=>'index.php?pagename='.$pagename.'&page='.$wp_rewrite->preg_index(1)
 	);
-
+//echo '<pre>';
+//print_r($wp_rewrite->rules);
+//echo '</pre>';
 	$wp_rewrite->rules = $new_rules + $wp_rewrite->rules;
 }
 

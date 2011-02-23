@@ -19,4 +19,6 @@
 		<?php wp_link_pages( array( 'before' => '<div class="page-link">' . __( 'Pages:','fe-fiction'), 'after' => '</div>' ) ); ?>
 	</div><!-- .entry-content -->
 
+<?php comments_template( '', true ); ?>
+
 </div>
